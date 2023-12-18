@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/socket.io@4.7.2/client-dist/socket.io.min.js"></script>
     <script src="https://unpkg.com/geolib@3.3.4/lib/index.js"></script>
     <script src="https://unpkg.com/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=API_KEY&libraries=services"></script>
 </head>
 <body>
 <div id="map"></div>
@@ -58,6 +59,12 @@
             <input type="text" class="form-control" aria-label="Longitude" aria-describedby="inputGroup-sizing-sm" id="longitudeInput">
             <button type="button" class="btn btn-outline-primary btn-sm" id="applyButton">Apply</button>
             <button type="button" class="btn btn-outline-primary btn-sm" id="currentLocation">Current Location</button>
+        </div>
+
+        <div class="input-group input-group-sm" role="group">
+            <span class="input-group-text">Address</span>
+            <input type="text" class="form-control" aria-label="Latitude" aria-describedby="inputGroup-sizing-sm" id="addressInput">
+            <button type="button" class="btn btn-outline-primary btn-sm" id="searchButton">Search</button>
         </div>
     </div>
 </div>

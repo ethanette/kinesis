@@ -60,7 +60,7 @@ const tickInterval = 1000; // update location per 1000ms
 const randomFactor = 0.2; // +-20% of origin value
 
 
-const tick = setInterval(function() {
+const tick = setInterval(function () {
     navigate();
 }, tickInterval);
 
@@ -92,7 +92,6 @@ const setPause = (v) => {
 }
 setPause(pause);
 
-
 document.getElementById('undoButton').addEventListener('click', deleteStep);
 document.getElementById('stopButton').addEventListener('click', clearSteps);
 
@@ -117,9 +116,10 @@ document.getElementsByName('loopChoice').forEach((element) => {
 
 document.getElementById('applyButton').addEventListener('click', moveLocation);
 document.getElementById('currentLocation').addEventListener('click', currentLocation);
+document.getElementById('searchButton').addEventListener('click', searchAddress);
 
 
-map.on('click', function(e) {
+map.on('click', function (e) {
     if (!initMain(e.latlng)) {
         addStep(e.latlng);
     }
@@ -129,7 +129,7 @@ map.on('zoomend', function () {
     saveConfig('zoom', map.getZoom());
 });
 
-map.on('moveend', function() {
+map.on('moveend', function () {
     const c = map.getCenter();
     saveConfig('latitude', c.lat);
     saveConfig('longitude', c.lng);
@@ -149,11 +149,11 @@ function initMain(latlng) {
         if (teleport(latlng)) {
             marker.addTo(map);
 
-            marker.on('mousedown', function(e) {
+            marker.on('mousedown', function (e) {
                 markerLastPos = e.latlng;
             });
 
-            marker.on('mouseup', function(e) {
+            marker.on('mouseup', function (e) {
                 if (!teleport(e.latlng)) {
                     marker.setLatLng(markerLastPos);
                 }
@@ -180,7 +180,6 @@ function teleport(latlng) {
     }
     return choice;
 }
-
 
 // move towards target with distance meters
 function move(target, distance) {
@@ -234,26 +233,45 @@ function clearSteps() {
     }
 }
 
+function setLocation(latlng) {
+    if (!initMain(latlng)) {
+        teleport(latlng)
+    }
+    map.panTo(latlng)
+}
+
 function moveLocation() {
-    const latitudeInput = document.getElementById('latitudeInput');
-    const longitudeInput = document.getElementById('longitudeInput');
-    const latlng = L.latLng(latitudeInput.value, longitudeInput.value)
+    const latitudeInput = document.getElementById('latitudeInput').value;
+    const longitudeInput = document.getElementById('longitudeInput').value;
     if (latitudeInput && longitudeInput) {
-        if (!initMain(latlng)) {
-            teleport(latlng)
-        }
-        map.panTo(latlng)
+        const latlng = L.latLng(latitudeInput, longitudeInput)
+        setLocation(latlng)
     }
 }
 
 function currentLocation() {
-    navigator.geolocation.getCurrentPosition(function(location) {
+    navigator.geolocation.getCurrentPosition(function (location) {
         const latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
-        if (!initMain(latlng)) {
-            teleport(latlng)
-        }
-        map.panTo(latlng)
+        setLocation(latlng)
     });
+}
+
+function searchAddress() {
+    const latitudeInput = document.getElementById('latitudeInput');
+    const longitudeInput = document.getElementById('longitudeInput');
+    const address = document.getElementById("addressInput").value;
+    if (address) {
+        var geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(address, function (result, status) {
+            console.log(result, status);
+            if (status === kakao.maps.services.Status.OK) {
+                const latlng = L.latLng(result[0].y, result[0].x)
+                latitudeInput.value = latlng.lat
+                longitudeInput.value = latlng.lng
+                setLocation(latlng)
+            }
+        });
+    }
 }
 
 function navigate() {
