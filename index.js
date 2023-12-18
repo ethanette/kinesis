@@ -115,9 +115,12 @@ document.getElementsByName('loopChoice').forEach((element) => {
     });
 });
 
+document.getElementById('applyButton').addEventListener('click', moveLocation);
+document.getElementById('currentLocation').addEventListener('click', currentLocation);
+
 
 map.on('click', function(e) {
-    if (!initMain(e)) {
+    if (!initMain(e.latlng)) {
         addStep(e.latlng);
     }
 });
@@ -140,10 +143,10 @@ const random = (x) => {
 
 
 // return true if initialized marker, false if already initialized
-function initMain(e) {
+function initMain(latlng) {
     if (marker === null) {
-        marker = L.marker(e.latlng, {draggable: true});
-        if (teleport(e.latlng)) {
+        marker = L.marker(latlng, {draggable: true});
+        if (teleport(latlng)) {
             marker.addTo(map);
 
             marker.on('mousedown', function(e) {
@@ -168,7 +171,7 @@ function initMain(e) {
 
 // return true if teleported, false if canceled teleportation
 function teleport(latlng) {
-    const choice = confirm('Teleport?')
+    const choice = confirm(`${latlng} Teleport?`)
     if (choice) {
         marker.setLatLng(latlng);
         markerShadowPos = latlng;
@@ -223,7 +226,6 @@ function deleteStep() {
     }
 }
 
-
 function clearSteps() {
     if (marker) {
         console.log(`clear path`);
@@ -232,6 +234,27 @@ function clearSteps() {
     }
 }
 
+function moveLocation() {
+    const latitudeInput = document.getElementById('latitudeInput');
+    const longitudeInput = document.getElementById('longitudeInput');
+    const latlng = L.latLng(latitudeInput.value, longitudeInput.value)
+    if (latitudeInput && longitudeInput) {
+        if (!initMain(latlng)) {
+            teleport(latlng)
+        }
+        map.panTo(latlng)
+    }
+}
+
+function currentLocation() {
+    navigator.geolocation.getCurrentPosition(function(location) {
+        const latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
+        if (!initMain(latlng)) {
+            teleport(latlng)
+        }
+        map.panTo(latlng)
+    });
+}
 
 function navigate() {
     const pathLatlngs = path.getLatLngs();
