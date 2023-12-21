@@ -116,7 +116,16 @@ document.getElementsByName('loopChoice').forEach((element) => {
 
 document.getElementById('applyButton').addEventListener('click', moveLocation);
 document.getElementById('currentLocation').addEventListener('click', currentLocation);
-document.getElementById('searchButton').addEventListener('click', searchAddress);
+document.getElementById('searchButton').addEventListener('click', searchKeyword);
+document.getElementById('latitudeInput').addEventListener('keyup', (e) => {
+    if (e.keyCode == "13") moveLocation()
+});
+document.getElementById('longitudeInput').addEventListener('keyup', (e) => {
+    if (e.keyCode == "13") moveLocation()
+});
+document.getElementById('keywordInput').addEventListener('keyup', (e) => {
+    if (e.keyCode == "13") searchKeyword()
+});
 
 
 map.on('click', function (e) {
@@ -246,6 +255,8 @@ function moveLocation() {
     if (latitudeInput && longitudeInput) {
         const latlng = L.latLng(latitudeInput, longitudeInput)
         setLocation(latlng)
+    } else {
+        alert("No location")
     }
 }
 
@@ -256,21 +267,25 @@ function currentLocation() {
     });
 }
 
-function searchAddress() {
+function searchKeyword() {
     const latitudeInput = document.getElementById('latitudeInput');
     const longitudeInput = document.getElementById('longitudeInput');
-    const address = document.getElementById("addressInput").value;
-    if (address) {
-        var geocoder = new kakao.maps.services.Geocoder();
-        geocoder.addressSearch(address, function (result, status) {
+    const keyword = document.getElementById("keywordInput").value;
+    if (keyword) {
+        var ps = new kakao.maps.services.Places()
+        ps.keywordSearch(keyword, function (result, status) {
             console.log(result, status);
             if (status === kakao.maps.services.Status.OK) {
                 const latlng = L.latLng(result[0].y, result[0].x)
                 latitudeInput.value = latlng.lat
                 longitudeInput.value = latlng.lng
                 setLocation(latlng)
+            } else {
+                alert("No result")
             }
         });
+    } else {
+        alert("No keyword")
     }
 }
 
