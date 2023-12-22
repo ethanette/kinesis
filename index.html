@@ -16,7 +16,7 @@
     <script src="https://unpkg.com/socket.io@4.7.2/client-dist/socket.io.min.js"></script>
     <script src="https://unpkg.com/geolib@3.3.4/lib/index.js"></script>
     <script src="https://unpkg.com/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=API_KEY&libraries=services"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e01b860f04582cb41fe5311d1b805f35&libraries=services"></script>
 </head>
 <body>
 <div id="map"></div>
@@ -50,13 +50,13 @@
 
             <input type="radio" class="btn-check" name="loopChoice" id="loopChoice3" autocomplete="off" value="uturn">
             <label class="btn btn-outline-primary" for="loopChoice3">U-Turn</label>
+
+            <button type="button" class="btn btn-outline-primary btn-sm" id="copyLocation">Copy</button>
         </div>
 
         <div class="input-group input-group-sm" role="group">
             <span class="input-group-text">Latitude</span>
-            <input type="text" class="form-control" aria-label="Latitude" aria-describedby="inputGroup-sizing-sm" id="latitudeInput">
-            <span class="input-group-text">Longitude</span>
-            <input type="text" class="form-control" aria-label="Longitude" aria-describedby="inputGroup-sizing-sm" id="longitudeInput">
+            <input type="text" class="form-control" aria-label="LatLng" aria-describedby="inputGroup-sizing-sm" id="latlngInput">
             <button type="button" class="btn btn-outline-primary btn-sm" id="applyButton">Apply</button>
             <button type="button" class="btn btn-outline-primary btn-sm" id="currentLocation">Current Location</button>
         </div>

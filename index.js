@@ -116,11 +116,9 @@ document.getElementsByName('loopChoice').forEach((element) => {
 
 document.getElementById('applyButton').addEventListener('click', moveLocation);
 document.getElementById('currentLocation').addEventListener('click', currentLocation);
+document.getElementById('copyLocation').addEventListener('click', copyLocation);
 document.getElementById('searchButton').addEventListener('click', searchKeyword);
-document.getElementById('latitudeInput').addEventListener('keyup', (e) => {
-    if (e.keyCode == "13") moveLocation()
-});
-document.getElementById('longitudeInput').addEventListener('keyup', (e) => {
+document.getElementById('latlngInput').addEventListener('keyup', (e) => {
     if (e.keyCode == "13") moveLocation()
 });
 document.getElementById('keywordInput').addEventListener('keyup', (e) => {
@@ -250,10 +248,10 @@ function setLocation(latlng) {
 }
 
 function moveLocation() {
-    const latitudeInput = document.getElementById('latitudeInput').value;
-    const longitudeInput = document.getElementById('longitudeInput').value;
-    if (latitudeInput && longitudeInput) {
-        const latlng = L.latLng(latitudeInput, longitudeInput)
+    const latlngInput = document.getElementById('latlngInput').value;
+    if (latlngInput) {
+        const latlngPaths = latlngInput.split(",")
+        const latlng = L.latLng(latlngPaths[0], latlngPaths[1])
         setLocation(latlng)
     } else {
         alert("No location")
@@ -262,14 +260,29 @@ function moveLocation() {
 
 function currentLocation() {
     navigator.geolocation.getCurrentPosition(function (location) {
+        const latlngInput = document.getElementById('latlngInput');
         const latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
+        latlngInput.value = `${latlng.lat},${latlng.lng}`
         setLocation(latlng)
     });
 }
 
+function copyLocation() {
+    if (marker) {
+        const latlng = marker.getLatLng()
+        const location = `${latlng.lat},${latlng.lng}`
+        navigator.clipboard.writeText(location)
+            .then(() => {
+                alert(`Location copied (${location})`)
+            })
+            .catch(err => {
+                alert('Copy location failed');
+            })
+    }
+}
+
 function searchKeyword() {
-    const latitudeInput = document.getElementById('latitudeInput');
-    const longitudeInput = document.getElementById('longitudeInput');
+    const latlngInput = document.getElementById('latlngInput');
     const keyword = document.getElementById("keywordInput").value;
     if (keyword) {
         var ps = new kakao.maps.services.Places()
@@ -277,8 +290,7 @@ function searchKeyword() {
             console.log(result, status);
             if (status === kakao.maps.services.Status.OK) {
                 const latlng = L.latLng(result[0].y, result[0].x)
-                latitudeInput.value = latlng.lat
-                longitudeInput.value = latlng.lng
+                latlngInput.value = `${latlng.lat},${latlng.lng}`
                 setLocation(latlng)
             } else {
                 alert("No result")
