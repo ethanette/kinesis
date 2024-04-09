@@ -1,4 +1,4 @@
-pymobiledevice3==2.18.1
+pymobiledevice3==2.30.1
 python-socketio==5.10.0
 eventlet==0.33.3
 aiofiles==23.2.1
